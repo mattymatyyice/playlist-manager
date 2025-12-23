@@ -1,6 +1,7 @@
 package app.dao;
 
 import app.model.Song;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,5 +18,12 @@ public class SongDAOImpl implements SongDAO {
     public List<Song> getAllSongs() {
         return songs;
     }
-}
 
+    @Override
+    public Song getSongByTitle(String title) {
+        return songs.stream()
+                .filter(s -> s.getTitle().equalsIgnoreCase(title))
+                .findFirst()
+                .orElse(null);
+    }
+}

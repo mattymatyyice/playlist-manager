@@ -8,9 +8,23 @@ import java.util.stream.Collectors;
 
 public class Service {
 
-    private final SongDAO songDAO = new SongDAOImpl();
-    private final PlaylistDAO playlistDAO = new PlaylistDAOImpl();
-    private final UserDAO userDAO = new UserDAOImpl();
+    private final SongDAO songDAO;
+    private final PlaylistDAO playlistDAO;
+    private final UserDAO userDAO;
+
+    // ✅ DEFAULT constructor (used by App)
+    public Service() {
+        this.songDAO = new SongDAOImpl();
+        this.playlistDAO = new PlaylistDAOImpl();
+        this.userDAO = new UserDAOImpl();
+    }
+
+    // ✅ TEST constructor (used by ServiceTest)
+    public Service(SongDAO songDAO, PlaylistDAO playlistDAO, UserDAO userDAO) {
+        this.songDAO = songDAO;
+        this.playlistDAO = playlistDAO;
+        this.userDAO = userDAO;
+    }
 
     // ---------- AUTH ----------
     public boolean login(int userId, String password) {
@@ -19,8 +33,7 @@ public class Service {
 
     // ---------- SONGS ----------
     public void addSong(String title, String artist, String genre, int lengthSeconds) {
-        Song song = new Song(title, artist, genre, lengthSeconds);
-        songDAO.addSong(song);
+        songDAO.addSong(new Song(title, artist, genre, lengthSeconds));
     }
 
     public List<Song> getAllSongs() {
@@ -41,8 +54,7 @@ public class Service {
 
     // ---------- PLAYLISTS ----------
     public void addPlaylist(String name, boolean personal) {
-        Playlist playlist = new Playlist(name, personal);
-        playlistDAO.addPlaylist(playlist);
+        playlistDAO.addPlaylist(new Playlist(name, personal));
     }
 
     public List<Playlist> getAllPlaylists() {
@@ -57,21 +69,12 @@ public class Service {
 
     // ---------- MANY-TO-MANY ----------
     public void addSongToPlaylistByName(String playlistName, String songTitle) {
-
-        Playlist playlist = playlistDAO.getAllPlaylists().stream()
-                .filter(p -> p.getName().equalsIgnoreCase(playlistName))
-                .findFirst()
-                .orElse(null);
-
+        Playlist playlist = playlistDAO.getPlaylistByName(playlistName);
         if (playlist == null) {
             throw new IllegalArgumentException("Playlist not found");
         }
 
-        Song song = songDAO.getAllSongs().stream()
-                .filter(s -> s.getTitle().equalsIgnoreCase(songTitle))
-                .findFirst()
-                .orElse(null);
-
+        Song song = songDAO.getSongByTitle(songTitle);
         if (song == null) {
             throw new IllegalArgumentException("Song not found");
         }

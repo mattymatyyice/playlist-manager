@@ -1,6 +1,7 @@
 package app.dao;
 
 import app.model.Playlist;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,5 +17,13 @@ public class PlaylistDAOImpl implements PlaylistDAO {
     @Override
     public List<Playlist> getAllPlaylists() {
         return playlists;
+    }
+
+    @Override
+    public Playlist getPlaylistByName(String name) {
+        return playlists.stream()
+                .filter(p -> p.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
     }
 }
