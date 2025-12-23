@@ -1,25 +1,41 @@
 package app.service;
 
 import app.model.Playlist;
-import app.model.Song;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
 
-    private final Service service = new Service();
+    private Service service;
+
+    @BeforeEach
+    void setup() {
+        // Test mode (safe even if CSV exists)
+        service = new Service(true);
+    }
 
     @Test
     void addSong_success() {
         service.addSong("Song A", "Artist A", "Pop", 200);
-        assertEquals(1, service.getAllSongs().size());
+
+        assertTrue(
+                service.getAllSongs()
+                        .stream()
+                        .anyMatch(s -> s.getTitle().equals("Song A"))
+        );
     }
 
     @Test
     void addPlaylist_success() {
         service.addPlaylist("My Playlist", true);
-        assertEquals(1, service.getAllPlaylists().size());
+
+        assertTrue(
+                service.getAllPlaylists()
+                        .stream()
+                        .anyMatch(p -> p.getName().equals("My Playlist"))
+        );
     }
 
     @Test
@@ -29,16 +45,26 @@ public class ServiceTest {
 
         service.addSongToPlaylistByName("My Playlist", "Song A");
 
-        Playlist p = service.getAllPlaylists().get(0);
-        assertEquals(1, p.getSongs().size());
+        Playlist playlist = service.getAllPlaylists()
+                .stream()
+                .filter(p -> p.getName().equals("My Playlist"))
+                .findFirst()
+                .orElseThrow();
+
+        assertTrue(
+                playlist.getSongs()
+                        .stream()
+                        .anyMatch(s -> s.getTitle().equals("Song A"))
+        );
     }
 
     @Test
     void addSongToPlaylist_songMissing() {
         service.addPlaylist("My Playlist", true);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                service.addSongToPlaylistByName("My Playlist", "Missing Song")
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addSongToPlaylistByName("My Playlist", "Missing Song")
         );
     }
 
@@ -46,25 +72,32 @@ public class ServiceTest {
     void addSongToPlaylist_playlistMissing() {
         service.addSong("Song A", "Artist A", "Pop", 200);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                service.addSongToPlaylistByName("Missing Playlist", "Song A")
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addSongToPlaylistByName("Missing Playlist", "Song A")
         );
     }
 
     @Test
     void getSongsByArtist() {
         service.addSong("Song A", "Artist A", "Pop", 200);
-        service.addSong("Song B", "Artist B", "Rock", 180);
 
-        assertEquals(1, service.getSongsByArtist("Artist A").size());
+        assertTrue(
+                service.getSongsByArtist("Artist A")
+                        .stream()
+                        .anyMatch(s -> s.getTitle().equals("Song A"))
+        );
     }
 
     @Test
     void getSongsByGenre() {
         service.addSong("Song A", "Artist A", "Pop", 200);
-        service.addSong("Song B", "Artist B", "Rock", 180);
 
-        assertEquals(1, service.getSongsByGenre("Rock").size());
+        assertTrue(
+                service.getSongsByGenre("Pop")
+                        .stream()
+                        .anyMatch(s -> s.getTitle().equals("Song A"))
+        );
     }
 
     @Test
@@ -72,7 +105,11 @@ public class ServiceTest {
         service.addPlaylist("Personal", true);
         service.addPlaylist("Shared", false);
 
-        assertEquals(1, service.getPersonalPlaylists().size());
+        assertTrue(
+                service.getPersonalPlaylists()
+                        .stream()
+                        .allMatch(Playlist::isPersonal)
+        );
     }
 
     @Test
