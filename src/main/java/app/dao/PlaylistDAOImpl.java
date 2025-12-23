@@ -17,13 +17,4 @@ public class PlaylistDAOImpl implements PlaylistDAO {
     public List<Playlist> getAllPlaylists() {
         return playlists;
     }
-
-    @Override
-    public Playlist getPlaylistByName(String name) {
-        return playlists.stream()
-                .filter(p -> p.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-    }
 }
-

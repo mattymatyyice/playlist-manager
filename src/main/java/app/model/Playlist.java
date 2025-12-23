@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
-    private int id;
-    private String name;
-    private boolean personal;
-    private List<Song> songs = new ArrayList<>();
 
-    public Playlist(int id, String name, boolean personal) {
-        this.id = id;
+    private final String name;
+    private final boolean personal;
+    private final List<Song> songs = new ArrayList<>();
+
+    public Playlist(String name, boolean personal) {
         this.name = name;
         this.personal = personal;
     }
 
-    public int getId() { return id; }
     public String getName() { return name; }
     public boolean isPersonal() { return personal; }
     public List<Song> getSongs() { return songs; }
@@ -26,7 +24,6 @@ public class Playlist {
 
     @Override
     public String toString() {
-        return "[" + id + "] " + name + (personal ? " (Personal)" : "");
+        return name + (personal ? " (Personal)" : "");
     }
 }
-

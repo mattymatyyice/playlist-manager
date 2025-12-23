@@ -4,18 +4,18 @@ import app.service.Service;
 import app.model.Playlist;
 import app.model.Song;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
         Service service = new Service();
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("=== Playlist Manager ===");
 
-        // ---- Login (simple for demo) ----
         System.out.print("User ID: ");
         int userId = Integer.parseInt(sc.nextLine());
 
@@ -29,7 +29,6 @@ public class App {
 
         System.out.println("Login successful.");
 
-        // ---- Main menu loop ----
         while (true) {
             System.out.println("\n1. Add song");
             System.out.println("2. List songs");
@@ -40,20 +39,16 @@ public class App {
             System.out.println("0. Exit");
             System.out.print("Choice: ");
 
-            int choice = Integer.parseInt(sc.nextLine());
+            String choice = sc.nextLine();
 
             switch (choice) {
-
-                case 1 -> {
-                    System.out.print("Song title: ");
+                case "1" -> {
+                    System.out.print("Title: ");
                     String title = sc.nextLine();
-
                     System.out.print("Artist: ");
                     String artist = sc.nextLine();
-
                     System.out.print("Genre: ");
                     String genre = sc.nextLine();
-
                     System.out.print("Length (seconds): ");
                     int length = Integer.parseInt(sc.nextLine());
 
@@ -61,56 +56,55 @@ public class App {
                     System.out.println("Song added.");
                 }
 
-                case 2 -> {
-                    for (Song s : service.getAllSongs()) {
-                        System.out.println(s);
-                    }
+                case "2" -> {
+                    List<Song> songs = service.getAllSongs();
+                    songs.forEach(System.out::println);
                 }
 
-                case 3 -> {
+                case "3" -> {
                     System.out.print("Playlist name: ");
                     String name = sc.nextLine();
-
-                    System.out.print("Is this a personal playlist? (true/false): ");
+                    System.out.print("Personal playlist? (true/false): ");
                     boolean personal = Boolean.parseBoolean(sc.nextLine());
 
                     service.addPlaylist(name, personal);
-                    System.out.println("Playlist created.");
+                    System.out.println("Playlist added.");
                 }
 
-                case 4 -> {
-                    for (Playlist p : service.getAllPlaylists()) {
-                        System.out.println(p);
-                    }
+                case "4" -> {
+                    List<Playlist> playlists = service.getAllPlaylists();
+                    playlists.forEach(System.out::println);
                 }
 
-                case 5 -> {
+                case "5" -> {
                     System.out.print("Playlist name: ");
                     String playlistName = sc.nextLine();
-
                     System.out.print("Song title: ");
                     String songTitle = sc.nextLine();
 
-                    service.addSongToPlaylistByName(playlistName, songTitle);
-                    System.out.println("Song added to playlist.");
-                }
-
-                case 6 -> {
-                    System.out.print("Playlist name: ");
-                    String name = sc.nextLine();
-
-                    Playlist playlist = service.getPlaylistByName(name);
-                    if (playlist == null) {
-                        System.out.println("Playlist not found.");
-                    } else {
-                        System.out.println(playlist);
-                        for (Song s : playlist.getSongs()) {
-                            System.out.println(" - " + s);
-                        }
+                    try {
+                        service.addSongToPlaylistByName(playlistName, songTitle);
+                        System.out.println("Song added to playlist.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
                     }
                 }
 
-                case 0 -> {
+                case "6" -> {
+                    System.out.print("Playlist name: ");
+                    String name = sc.nextLine();
+
+                    service.getAllPlaylists()
+                            .stream()
+                            .filter(p -> p.getName().equalsIgnoreCase(name))
+                            .findFirst()
+                            .ifPresentOrElse(
+                                    p -> p.getSongs().forEach(System.out::println),
+                                    () -> System.out.println("Playlist not found.")
+                            );
+                }
+
+                case "0" -> {
                     System.out.println("Goodbye!");
                     return;
                 }
@@ -120,4 +114,3 @@ public class App {
         }
     }
 }
-

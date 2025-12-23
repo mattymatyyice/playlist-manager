@@ -17,13 +17,5 @@ public class SongDAOImpl implements SongDAO {
     public List<Song> getAllSongs() {
         return songs;
     }
-
-    @Override
-    public Song getSongByTitle(String title) {
-        return songs.stream()
-                .filter(s -> s.getTitle().equalsIgnoreCase(title))
-                .findFirst()
-                .orElse(null);
-    }
 }
 
