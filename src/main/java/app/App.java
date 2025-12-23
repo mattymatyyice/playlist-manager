@@ -36,12 +36,16 @@ public class App {
             System.out.println("4. View playlists");
             System.out.println("5. Add song to playlist");
             System.out.println("6. View playlist contents");
+            System.out.println("7. View songs by artist");
+            System.out.println("8. View songs by genre");
+            System.out.println("9. View personal playlists");
             System.out.println("0. Exit");
             System.out.print("Choice: ");
 
             String choice = sc.nextLine();
 
             switch (choice) {
+
                 case "1" -> {
                     System.out.print("Title: ");
                     String title = sc.nextLine();
@@ -57,8 +61,8 @@ public class App {
                 }
 
                 case "2" -> {
-                    List<Song> songs = service.getAllSongs();
-                    songs.forEach(System.out::println);
+                    service.getAllSongs()
+                            .forEach(System.out::println);
                 }
 
                 case "3" -> {
@@ -72,8 +76,8 @@ public class App {
                 }
 
                 case "4" -> {
-                    List<Playlist> playlists = service.getAllPlaylists();
-                    playlists.forEach(System.out::println);
+                    service.getAllPlaylists()
+                            .forEach(System.out::println);
                 }
 
                 case "5" -> {
@@ -102,6 +106,27 @@ public class App {
                                     p -> p.getSongs().forEach(System.out::println),
                                     () -> System.out.println("Playlist not found.")
                             );
+                }
+
+                case "7" -> {
+                    System.out.print("Artist: ");
+                    String artist = sc.nextLine();
+
+                    service.getSongsByArtist(artist)
+                            .forEach(System.out::println);
+                }
+
+                case "8" -> {
+                    System.out.print("Genre: ");
+                    String genre = sc.nextLine();
+
+                    service.getSongsByGenre(genre)
+                            .forEach(System.out::println);
+                }
+
+                case "9" -> {
+                    service.getPersonalPlaylists()
+                            .forEach(p -> System.out.println(p.getName()));
                 }
 
                 case "0" -> {
