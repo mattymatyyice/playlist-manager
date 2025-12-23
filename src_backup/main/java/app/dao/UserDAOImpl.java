@@ -1,4 +1,4 @@
-package app.dao;
+﻿package app.dao;
 
 public class UserDAOImpl implements UserDAO {
 
@@ -7,6 +7,3 @@ public class UserDAOImpl implements UserDAO {
         return userId == 1 && password.equals("password");
     }
 }
-
-
-

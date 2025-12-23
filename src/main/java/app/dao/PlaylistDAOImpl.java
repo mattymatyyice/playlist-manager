@@ -6,12 +6,11 @@ import java.util.List;
 
 public class PlaylistDAOImpl implements PlaylistDAO {
 
-    private List<Playlist> playlists = new ArrayList<>();
-    private int idCounter = 1;
+    private final List<Playlist> playlists = new ArrayList<>();
 
     @Override
-    public void addPlaylist(String name, boolean personal) {
-        playlists.add(new Playlist(idCounter++, name, personal));
+    public void addPlaylist(Playlist playlist) {
+        playlists.add(playlist);
     }
 
     @Override
@@ -21,11 +20,10 @@ public class PlaylistDAOImpl implements PlaylistDAO {
 
     @Override
     public Playlist getPlaylistByName(String name) {
-        for (Playlist p : playlists) {
-            if (p.getName().equalsIgnoreCase(name)) {
-                return p;
-            }
-        }
-        return null;
+        return playlists.stream()
+                .filter(p -> p.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
     }
 }
+

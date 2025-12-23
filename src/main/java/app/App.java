@@ -1,20 +1,12 @@
 package app;
 
 import app.service.Service;
-import app.model.*;
+import app.model.Playlist;
+import app.model.Song;
+
 import java.util.Scanner;
 
 public class App {
-
-    private static int readInt(Scanner sc) {
-        while (true) {
-            try {
-                return Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-                System.out.print("Please enter a number: ");
-            }
-        }
-    }
 
     public static void main(String[] args) {
 
@@ -23,100 +15,99 @@ public class App {
 
         System.out.println("=== Playlist Manager ===");
 
+        // ---- Login (simple for demo) ----
         System.out.print("User ID: ");
-        int uid = readInt(sc);
+        int userId = Integer.parseInt(sc.nextLine());
 
         System.out.print("Password: ");
-        String pw = sc.nextLine();
+        String password = sc.nextLine();
 
-        if (!service.login(uid, pw)) {
-            System.out.println("Login failed");
+        if (!service.login(userId, password)) {
+            System.out.println("Login failed.");
             return;
         }
 
-        System.out.println("Login successful");
+        System.out.println("Login successful.");
 
+        // ---- Main menu loop ----
         while (true) {
             System.out.println("\n1. Add song");
             System.out.println("2. List songs");
             System.out.println("3. Add playlist");
             System.out.println("4. View playlists");
             System.out.println("5. Add song to playlist");
-            System.out.println("6. View playlist songs");
-            System.out.println("7. View personal playlists");
-            System.out.println("8. View songs by artist");
-            System.out.println("9. View songs by genre");
+            System.out.println("6. View playlist contents");
             System.out.println("0. Exit");
             System.out.print("Choice: ");
 
-            int choice = readInt(sc);
+            int choice = Integer.parseInt(sc.nextLine());
 
             switch (choice) {
+
                 case 1 -> {
-                    System.out.print("Title: ");
+                    System.out.print("Song title: ");
                     String title = sc.nextLine();
+
                     System.out.print("Artist: ");
                     String artist = sc.nextLine();
+
                     System.out.print("Genre: ");
                     String genre = sc.nextLine();
+
                     System.out.print("Length (seconds): ");
-                    int len = readInt(sc);
-                    service.addSong(title, artist, genre, len);
+                    int length = Integer.parseInt(sc.nextLine());
+
+                    service.addSong(title, artist, genre, length);
                     System.out.println("Song added.");
                 }
 
-                case 2 -> service.getAllSongs().forEach(System.out::println);
+                case 2 -> {
+                    for (Song s : service.getAllSongs()) {
+                        System.out.println(s);
+                    }
+                }
 
                 case 3 -> {
                     System.out.print("Playlist name: ");
                     String name = sc.nextLine();
-                    System.out.print("Personal playlist? (y/n): ");
-                    boolean personal = sc.nextLine().equalsIgnoreCase("y");
+
+                    System.out.print("Is this a personal playlist? (true/false): ");
+                    boolean personal = Boolean.parseBoolean(sc.nextLine());
+
                     service.addPlaylist(name, personal);
-                    System.out.println("Playlist added.");
+                    System.out.println("Playlist created.");
                 }
 
-                case 4 -> service.getAllPlaylists().forEach(System.out::println);
+                case 4 -> {
+                    for (Playlist p : service.getAllPlaylists()) {
+                        System.out.println(p);
+                    }
+                }
 
                 case 5 -> {
                     System.out.print("Playlist name: ");
-                    String pname = sc.nextLine();
+                    String playlistName = sc.nextLine();
+
                     System.out.print("Song title: ");
-                    String sname = sc.nextLine();
-                    service.addSongToPlaylistByName(pname, sname);
-                    System.out.println("Song added to playlist (if names matched).");
+                    String songTitle = sc.nextLine();
+
+                    service.addSongToPlaylistByName(playlistName, songTitle);
+                    System.out.println("Song added to playlist.");
                 }
 
                 case 6 -> {
                     System.out.print("Playlist name: ");
-                    String pname = sc.nextLine();
-                    Playlist p = service.getAllPlaylists()
-                            .stream()
-                            .filter(pl -> pl.getName().equalsIgnoreCase(pname))
-                            .findFirst()
-                            .orElse(null);
+                    String name = sc.nextLine();
 
-                    if (p == null) {
+                    Playlist playlist = service.getPlaylistByName(name);
+                    if (playlist == null) {
                         System.out.println("Playlist not found.");
-                    } else if (p.getSongs().isEmpty()) {
-                        System.out.println("(No songs yet.)");
                     } else {
-                        p.getSongs().forEach(System.out::println);
+                        System.out.println(playlist);
+                        for (Song s : playlist.getSongs()) {
+                            System.out.println(" - " + s);
+                        }
                     }
-                }
-
-                case 7 -> service.getPersonalPlaylists().forEach(System.out::println);
-
-                case 8 -> {
-                    System.out.print("Artist name: ");
-                    service.getSongsByArtist(sc.nextLine())
-                            .forEach(System.out::println);
-                }
-
-                case 9 -> {
-                    System.out.print("Genre name: ");
-                    service.getSongsByGenre(sc.nextLine())
-                            .forEach(System.out::println);
                 }
 
                 case 0 -> {
@@ -124,8 +115,9 @@ public class App {
                     return;
                 }
 
-                default -> System.out.println("Invalid option");
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
 }
+

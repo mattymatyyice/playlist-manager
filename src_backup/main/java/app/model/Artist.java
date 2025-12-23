@@ -1,10 +1,10 @@
-package app.model;
+﻿package app.model;
 
-public class Genre {
+public class Artist {
     private int id;
     private String name;
 
-    public Genre(int id, String name) {
+    public Artist(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -17,6 +17,3 @@ public class Genre {
         return name;
     }
 }
-
-
-

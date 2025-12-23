@@ -1,4 +1,4 @@
-package app.model;
+﻿package app.model;
 
 public class Genre {
     private int id;
@@ -17,6 +17,3 @@ public class Genre {
         return name;
     }
 }
-
-
-

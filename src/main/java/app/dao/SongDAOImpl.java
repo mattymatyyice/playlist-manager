@@ -6,12 +6,11 @@ import java.util.List;
 
 public class SongDAOImpl implements SongDAO {
 
-    private List<Song> songs = new ArrayList<>();
-    private int idCounter = 1;
+    private final List<Song> songs = new ArrayList<>();
 
     @Override
-    public void addSong(String title, String artist, String genre, int lengthSeconds) {
-        songs.add(new Song(idCounter++, title, artist, genre, lengthSeconds));
+    public void addSong(Song song) {
+        songs.add(song);
     }
 
     @Override
@@ -21,9 +20,10 @@ public class SongDAOImpl implements SongDAO {
 
     @Override
     public Song getSongByTitle(String title) {
-        for (Song s : songs) {
-            if (s.getTitle().equalsIgnoreCase(title)) return s;
-        }
-        return null;
+        return songs.stream()
+                .filter(s -> s.getTitle().equalsIgnoreCase(title))
+                .findFirst()
+                .orElse(null);
     }
 }
+

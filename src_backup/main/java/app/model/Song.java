@@ -1,4 +1,4 @@
-package app.model;
+﻿package app.model;
 
 public class Song {
     private int id;
@@ -19,10 +19,12 @@ public class Song {
     public String getTitle() { return title; }
     public String getArtist() { return artist; }
     public String getGenre() { return genre; }
+    public int getLengthSeconds() { return lengthSeconds; }
 
     @Override
     public String toString() {
-        return "[" + id + "] " + title + " - " + artist + " (" + genre + ")";
+        int m = lengthSeconds / 60;
+        int s = lengthSeconds % 60;
+        return title + " | " + artist + " | " + genre + " | " + m + "m " + s + "s";
     }
 }
-

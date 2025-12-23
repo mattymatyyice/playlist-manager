@@ -1,9 +1,10 @@
-package app.model;
+﻿package app.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
+
     private int id;
     private String name;
     private boolean personal;
@@ -15,18 +16,24 @@ public class Playlist {
         this.personal = personal;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public boolean isPersonal() { return personal; }
-    public List<Song> getSongs() { return songs; }
+    public String getName() {
+        return name;
+    }
+
+    public boolean isPersonal() {
+        return personal;
+    }
 
     public void addSong(Song song) {
         songs.add(song);
     }
 
+    public List<Song> getSongs() {
+        return songs;
+    }
+
     @Override
     public String toString() {
-        return "[" + id + "] " + name + (personal ? " (Personal)" : "");
+        return name + (personal ? " [Personal]" : "");
     }
 }
-
