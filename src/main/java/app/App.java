@@ -42,7 +42,11 @@ public class App {
             System.out.println("0. Exit");
             System.out.print("Choice: ");
 
-            String choice = sc.nextLine();
+if (!sc.hasNextLine()) {
+    System.out.println("Input ended. Exiting.");
+    return;
+}
+String choice = sc.nextLine();
 
             switch (choice) {
 
@@ -53,6 +57,7 @@ public class App {
                     String artist = sc.nextLine();
                     System.out.print("Genre: ");
                     String genre = sc.nextLine();
+                    
                     System.out.print("Length (seconds): ");
                     int length = Integer.parseInt(sc.nextLine());
 

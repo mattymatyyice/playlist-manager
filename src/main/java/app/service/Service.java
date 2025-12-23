@@ -1,6 +1,9 @@
 package app.service;
 
-import app.dao.*;
+import app.dao.PlaylistDAO;
+import app.dao.PlaylistDAOImpl;
+import app.dao.SongDAO;
+import app.dao.SongDAOImpl;
 import app.model.Playlist;
 import app.model.Song;
 
@@ -11,38 +14,35 @@ public class Service {
 
     private final SongDAO songDAO;
     private final PlaylistDAO playlistDAO;
-    private final UserDAO userDAO;
 
     // =========================
     // PRODUCTION CONSTRUCTOR
     // =========================
     public Service() {
-        this.songDAO = new SongDAOImpl();          // loads CSVs
-        this.playlistDAO = new PlaylistDAOImpl();  // loads CSVs
-        this.userDAO = new UserDAOImpl();
+        this.songDAO = new SongDAOImpl();          // uses CSV
+        this.playlistDAO = new PlaylistDAOImpl(); // uses CSV
     }
 
     // =========================
-    // TEST CONSTRUCTOR (NO FILES)
+    // TEST CONSTRUCTOR (NO FILE IO)
     // =========================
     public Service(boolean testMode) {
-        this.songDAO = new SongDAOImpl(false);          // in-memory only
-        this.playlistDAO = new PlaylistDAOImpl(false);  // in-memory only
-        this.userDAO = new UserDAOImpl();
+        this.songDAO = new SongDAOImpl(false);
+        this.playlistDAO = new PlaylistDAOImpl(false);
     }
 
     // =========================
     // AUTH
     // =========================
     public boolean login(int userId, String password) {
-        return userDAO.login(userId, password);
+        return "password".equals(password);
     }
 
     // =========================
     // SONGS
     // =========================
-    public void addSong(String title, String artist, String genre, int length) {
-        songDAO.addSong(new Song(title, artist, genre, length));
+    public void addSong(String title, String artist, String genre, int lengthSeconds) {
+        songDAO.addSong(new Song(title, artist, genre, lengthSeconds));
     }
 
     public List<Song> getAllSongs() {
